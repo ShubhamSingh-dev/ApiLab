@@ -6,9 +6,7 @@ const page = async () => {
   const user = await currentUser();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <UserButton user={user} />
-    </div>
+    <div className="flex flex-col items-center justify-center min-h-screen"></div>
   );
 };
 
