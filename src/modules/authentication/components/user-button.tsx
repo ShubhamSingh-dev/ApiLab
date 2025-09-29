@@ -1,3 +1,5 @@
+// src/modules/authentication/components/user-button.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -28,7 +30,7 @@ interface UserData {
   email: string | null;
   name: string | null;
   image: string | null;
-  createdAt: Date;
+  createdAt: Date | null;
   updatedAt: Date;
 }
 
@@ -100,11 +102,14 @@ export default function UserButton({
   };
 
   // Format member since date
-  const formatMemberSince = (date: Date) => {
+  const formatMemberSince = (date: Date | null) => {
+    if (!date || isNaN(new Date(date).getTime())) {
+      return "N/A";
+    }
     return new Intl.DateTimeFormat("en-US", {
       month: "long",
       year: "numeric",
-    }).format(new Date(date));
+    }).format(date);
   };
 
   // Avatar sizes
@@ -176,7 +181,7 @@ export default function UserButton({
                 )}
               </div>
             </div>
-            {showMemberSince && (
+            {showMemberSince && user.createdAt && (
               <p className="text-xs text-muted-foreground">
                 Member since {formatMemberSince(user.createdAt)}
               </p>

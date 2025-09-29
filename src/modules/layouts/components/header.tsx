@@ -6,6 +6,8 @@ import UserButton from "@/modules/authentication/components/user-button";
 import { UserProps } from "../types";
 import SearchBar from "./search-bar";
 import { currentUser } from "@/modules/authentication/actions";
+import InviteMember from "./invite-member";
+import Workspace from "./workspace";
 
 interface Props {
   user: UserProps;
@@ -26,9 +28,9 @@ const Header = ({ user }: Props) => {
         </div>
       </div>
       <div className="col-span-2 flex items-center justify-end space-x-2 hover:cursor-pointer hover:opacity-80">
-        {/* <InviteMember /> */}
+        <InviteMember />
         {/* @ts-ignore */}
-        {/* <WorkSpace workspace={workspace} /> */}
+        <Workspace />
         <UserButton user={user} size="sm" />
       </div>
     </header>

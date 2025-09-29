@@ -3,7 +3,7 @@ import Header from "@/modules/layouts/components/header";
 import React from "react";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const user = currentUser();
+  const user = await currentUser();
   return (
     <>
       {/* @ts-ignore */}
