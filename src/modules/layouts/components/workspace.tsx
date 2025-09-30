@@ -17,7 +17,7 @@ import { useWorkspaceStore } from "../store";
 import CreateWorkspace from "./create-workspace";
 
 const Workspace = () => {
-  const { data: workspaces, isLoading } = useWorkspace();
+  const { data: workspaces, isPending } = useWorkspace();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { selectedWorkspace, setSelectedWorkspace } = useWorkspaceStore();
@@ -28,7 +28,7 @@ const Workspace = () => {
     }
   }, [workspaces, selectedWorkspace, setSelectedWorkspace]);
 
-  if (isLoading) {
+  if (isPending) {
     return <Loader className="animate-spin size-4 text-indigo-400" />;
   }
 

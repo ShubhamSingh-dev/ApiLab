@@ -18,7 +18,7 @@ export function useCreateWorkspace() {
   });
 }
 
-export function useWorkspaceById(workspaceId: string) {
+export function useGetWorkspace(workspaceId: string) {
   return useQuery({
     queryKey: ["workspace", workspaceId],
     queryFn: async () => await getWorkspaceById(workspaceId),
