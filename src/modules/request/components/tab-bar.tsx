@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRequestPlaygroundStore } from "../store/useRequestStore";
 import { X } from "lucide-react";
+import AddNameModal from "./add-name-modal";
 
 const TabBar = () => {
   const { tabs, activeTabId, setActiveTab, addTab, closeTab } =
@@ -71,6 +72,13 @@ const TabBar = () => {
           +
         </button>
       </div>
+      {selectedTabId && (
+        <AddNameModal
+          isModalOpen={renameModalOpen}
+          setIsModalOpen={setRenameModalOpen}
+          tabId={selectedTabId}
+        />
+      )}
     </>
   );
 };

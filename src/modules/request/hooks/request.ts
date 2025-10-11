@@ -5,9 +5,12 @@ import {
   saveRequest,
   type Request,
 } from "../actions";
+import { useRequestPlaygroundStore } from "../store/useRequestStore";
 
 export function useAddRequestToCollection(collectionId: string) {
   const queryClient = useQueryClient();
+  const { updateTabFromSavedRequest, activeTabId } =
+    useRequestPlaygroundStore();
   return useMutation({
     mutationFn: async (value: Request) =>
       addRequestToCollection(collectionId, value),
@@ -15,7 +18,8 @@ export function useAddRequestToCollection(collectionId: string) {
       queryClient.invalidateQueries({
         queryKey: ["requests", collectionId],
       });
-      console.log(data);
+      // @ts-ignore
+      updateTabFromSavedRequest(activeTabId!, data);
     },
   });
 }
@@ -28,12 +32,15 @@ export function useGetAllRequestFromCollection(collectionId: string) {
 }
 
 export function useSaveRequest(requestId: string) {
+  const { updateTabFromSavedRequest, activeTabId } =
+    useRequestPlaygroundStore();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (value: Request) => saveRequest(requestId, value),
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      console.log(data);
+      //@ts-ignore
+      updateTabFromSavedRequest(activeTabId!, data);
     },
   });
 }
