@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addRequestToCollection,
   getAllRequestFromCollection,
+  run,
   saveRequest,
   type Request,
 } from "../actions";
@@ -44,3 +45,17 @@ export function useSaveRequest(requestId: string) {
     },
   });
 }
+
+export const useRunRequest = (requestId: string) => {
+  const queryClient = useQueryClient();
+  const { setResponseViewerData } = useRequestPlaygroundStore();
+
+  return useMutation({
+    mutationFn: async () => run(requestId),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["requests"] });
+      // @ts-ignore
+      setResponseViewerData(data);
+    },
+  });
+};

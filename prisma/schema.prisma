@@ -158,8 +158,24 @@ model Request {
 
   collectionId   String
   collection   Collection     @relation(fields: [collectionId], references: [id],onDelete: Cascade) 
+  runs   RequestRun[]
 
   createdAt     DateTime    @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model RequestRun {
+  id    String    @id     @default(cuid())
+  status  Int?
+  statusText   String?
+
+  headers   Json?
+  body   Json?
+  durationMs   Int?
+
+  requestId   String
+  request   Request     @relation(fields: [requestId], references: [id],onDelete: Cascade) 
+
+  createdAt     DateTime    @default(now())
 }
 

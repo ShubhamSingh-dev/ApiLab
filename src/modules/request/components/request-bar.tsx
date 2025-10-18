@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-// import { useRunRequest } from '../hooks/request'
+import { useRunRequest } from "../hooks/request";
 import { toast } from "sonner";
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 }
 
 const RequestBar = ({ tab, updateTab }: Props) => {
-  // const {mutateAsync , isPending , isError} = useRunRequest(tab?.requestId!);
+  const { mutateAsync, isPending, isError } = useRunRequest(tab?.requestId!);
   const requestColorMap: Record<string, string> = {
     GET: "text-green-500",
     POST: "text-blue-500",
@@ -30,15 +30,15 @@ const RequestBar = ({ tab, updateTab }: Props) => {
     DELETE: "text-red-500",
   };
 
-  // const onSendRequest = async () => {
-  //   try {
-  //     const res = await mutateAsync();
+  const onSendRequest = async () => {
+    try {
+      const res = await mutateAsync();
 
-  //     toast.success('Request sent successfully!');
-  //   } catch (error) {
-  //     toast.error('Failed to send request.');
-  //   }
-  // }
+      toast.success("Request sent successfully!");
+    } catch (error) {
+      toast.error("Failed to send request.");
+    }
+  };
 
   return (
     <div className="flex flex-row items-center justify-between bg-zinc-900 rounded-md px-2 py-2 w-full">
@@ -78,10 +78,10 @@ const RequestBar = ({ tab, updateTab }: Props) => {
         />
       </div>
 
-      <Button 
-      type='submit'
-        // onClick={onSendRequest}
-        // disabled={isPending || !tab.url}
+      <Button
+        type="submit"
+        onClick={onSendRequest}
+        disabled={isPending || !tab.url}
         className="ml-2 text-white  font-bold bg-indigo-500 hover:bg-indigo-600"
       >
         <Send className="mr-2" />

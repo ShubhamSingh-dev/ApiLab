@@ -1,6 +1,32 @@
 import { create } from "zustand";
 import { nanoid } from "nanoid";
 
+type HeadersMap = Record<string, string>;
+
+interface RequestRun {
+  id: string;
+  requestId?: string;
+  status?: number;
+  statusText?: string;
+  headers?: HeadersMap;
+  body?: string | object | null;
+  durationMs?: number;
+  createdAt?: Date;
+}
+
+interface ResponseData {
+  success: boolean;
+  requestRun: RequestRun;
+  result?: Result;
+}
+
+interface Result {
+  status?: number;
+  statusText?: string;
+  durationMs?: number;
+  size?: number;
+}
+
 interface SavedRequest {
   id: string;
   name: string;
@@ -38,12 +64,15 @@ type PlaygroundState = {
     tabId: string,
     savedRequest: SavedRequest
   ) => void;
-  // responseViewerData:ResponseData | null;
-  // setResponseViewerData: (data:ResponseData) => void
+  responseViewerData: ResponseData | null;
+  setResponseViewerData: (data: ResponseData) => void;
 };
 
 // @ts-ignore
 export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
+
+  responseViewerData: null,
+  setResponseViewerData: (data) => set({ responseViewerData: data }),
   tabs: [],
   activeTabId: null,
   addTab: () =>
