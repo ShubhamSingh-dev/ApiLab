@@ -7,6 +7,7 @@ import {
   type Request,
 } from "../actions";
 import { useRequestPlaygroundStore } from "../store/useRequestStore";
+import { ResponseData } from "../components/response-viewer";
 
 export function useAddRequestToCollection(collectionId: string) {
   const queryClient = useQueryClient();
@@ -51,11 +52,11 @@ export const useRunRequest = (requestId: string) => {
   const { setResponseViewerData } = useRequestPlaygroundStore();
 
   return useMutation({
-    mutationFn: async () => run(requestId),
-    onSuccess: async () => {
+    mutationFn: async () => run(requestId) as Promise<ResponseData>, // Type the return
+    onSuccess: async (data) => { // ✅ FIX: Added 'data' argument to capture the result
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      // @ts-ignore
-      setResponseViewerData(data);
+      // @ts-ignore 
+      setResponseViewerData(data); // ✅ FIX: Use the 'data' argument
     },
   });
 };

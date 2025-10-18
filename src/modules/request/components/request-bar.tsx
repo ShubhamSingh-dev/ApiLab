@@ -34,9 +34,17 @@ const RequestBar = ({ tab, updateTab }: Props) => {
     try {
       const res = await mutateAsync();
 
-      toast.success("Request sent successfully!");
+      if (res.success) {
+        // ✅ FIX: Check the 'success' flag on the response object
+        toast.success("Request sent successfully!");
+      } else {
+        const msg =
+          (res as any)?.error ?? (res as any)?.message ?? JSON.stringify(res);
+        toast.error("Failed to send request: " + (msg || "Unknown error"));
+      }
     } catch (error) {
       toast.error("Failed to send request.");
+      console.error("Request mutation failed:", error);
     }
   };
 
