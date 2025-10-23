@@ -7,13 +7,12 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 import RequestEditor from "./request-editor";
 import { REST_METHOD } from "@prisma/client";
-import { methods } from "better-auth/react";
 import SaveRequestToCollectionModal from "@/modules/collections/components/add-request-modal";
 const PlaygroundPage = () => {
   const { tabs, activeTabId, addTab } = useRequestPlaygroundStore();
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
-  const { mutateAsync, isPending } = useSaveRequest(activeTab?.requestId!);
+  const { mutateAsync, isPending } = useSaveRequest(activeTab?.requestId || "");
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const getCurrentRequestData = () => {
@@ -55,9 +54,9 @@ const PlaygroundPage = () => {
 
           toast.success("Request saved successfully");
         } catch (error: any) {
-          const errorMessage =
+          const message =
             error instanceof Error ? error.message : "Unknown error";
-          toast.error("Failed to save request: " + errorMessage);
+          toast.error("Failed to save request: " + message);
         }
       } else {
         setShowSaveModal(true);

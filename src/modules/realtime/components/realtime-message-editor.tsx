@@ -105,7 +105,7 @@ const RealtimeMessageEditor = () => {
       const formatted = JSON.stringify(parsed, null, 2);
       setDraftMessage(formatted);
       if (editorRef.current) {
-        // @ts-ignore
+        // @ts-expect-error
         editorRef.current.setValue(formatted);
       }
     } catch (error) {
@@ -128,9 +128,9 @@ const RealtimeMessageEditor = () => {
     const emptyMessage = "{\n  \n}";
     setDraftMessage(emptyMessage);
     if (editorRef.current) {
-      // @ts-ignore
+      // @ts-expect-error
       editorRef.current.setValue(emptyMessage);
-      // @ts-ignore
+      // @ts-expect-error
       editorRef.current.focus();
     }
   }, [setDraftMessage]);

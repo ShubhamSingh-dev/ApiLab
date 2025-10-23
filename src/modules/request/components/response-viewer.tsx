@@ -87,7 +87,7 @@ const ResponseViewer = ({ responseData }: Props) => {
       responseBody = rawBody ?? {};
     }
     formattedJsonString = JSON.stringify(responseBody, null, 2);
-  } catch (e) {
+  } catch {
     // If parsing fails, fall back to the raw string
     responseBody = responseData?.requestRun?.body ?? {};
     formattedJsonString =

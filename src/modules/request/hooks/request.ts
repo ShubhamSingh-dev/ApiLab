@@ -20,7 +20,7 @@ export function useAddRequestToCollection(collectionId: string) {
       queryClient.invalidateQueries({
         queryKey: ["requests", collectionId],
       });
-      // @ts-ignore-error
+      // @ts-expect-error
       updateTabFromSavedRequest(activeTabId!, data);
     },
   });
@@ -41,7 +41,7 @@ export function useSaveRequest(requestId: string) {
     mutationFn: async (value: Request) => saveRequest(requestId, value),
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      //@ts-ignore-error
+      //@ts-expect-error
       updateTabFromSavedRequest(activeTabId!, data);
     },
   });
@@ -53,9 +53,10 @@ export const useRunRequest = (requestId: string) => {
 
   return useMutation({
     mutationFn: async () => run(requestId) as Promise<ResponseData>, // Type the return
-    onSuccess: async (data) => { // ✅ FIX: Added 'data' argument to capture the result
+    onSuccess: async (data) => {
+      // ✅ FIX: Added 'data' argument to capture the result
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      // @ts-ignore-error 
+      // @ts-expect-error
       setResponseViewerData(data); // ✅ FIX: Use the 'data' argument
     },
   });

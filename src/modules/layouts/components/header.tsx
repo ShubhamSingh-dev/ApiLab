@@ -29,7 +29,7 @@ const Header = ({ user }: Props) => {
       </div>
       <div className="col-span-2 flex items-center justify-end space-x-2 hover:cursor-pointer hover:opacity-80">
         <InviteMember />
-        {/* @ts-ignore */}
+        {/* @ts-expect-error */}
         <Workspace />
         <UserButton user={user} size="sm" />
       </div>
