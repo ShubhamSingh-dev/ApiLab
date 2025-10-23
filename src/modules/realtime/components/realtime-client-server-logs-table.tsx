@@ -1,112 +1,155 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useWsStore } from '../hooks/useWs'
-import { ChevronUp, ChevronDown, Trash2, Copy, Clock, ArrowUpRight, ArrowDownLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import React, { useState, useEffect, useRef } from "react";
+import { useWsStore } from "../hooks/useWs";
+import {
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Copy,
+  Clock,
+  ArrowUpRight,
+  ArrowDownLeft,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const RealtimeClientServerLogsTable = () => {
-  const { messages, clearMessages } = useWsStore()
-  const [selectedMessageIndex, setSelectedMessageIndex] = useState<number>(-1)
-  const tableRef = useRef<HTMLDivElement>(null)
-  const rowRefs = useRef<(HTMLDivElement | null)[]>([])
+  const { messages, clearMessages } = useWsStore();
+  const [selectedMessageIndex, setSelectedMessageIndex] = useState<number>(-1);
+  const tableRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messages.length > 0 && selectedMessageIndex === -1) {
-      scrollToBottom()
+      scrollToBottom();
     }
-  }, [messages.length])
+  }, [messages.length]);
 
   // Update row refs array when messages change
   useEffect(() => {
-    rowRefs.current = rowRefs.current.slice(0, messages.length)
-  }, [messages.length])
+    rowRefs.current = rowRefs.current.slice(0, messages.length);
+  }, [messages.length]);
 
   const scrollToBottom = () => {
     if (tableRef.current) {
-      tableRef.current.scrollTop = tableRef.current.scrollHeight
+      tableRef.current.scrollTop = tableRef.current.scrollHeight;
     }
-  }
+  };
 
   const scrollToRow = (index: number) => {
-    const row = rowRefs.current[index]
+    const row = rowRefs.current[index];
     if (row && tableRef.current) {
-      const containerRect = tableRef.current.getBoundingClientRect()
-      const rowRect = row.getBoundingClientRect()
-      
-      if (rowRect.top < containerRect.top || rowRect.bottom > containerRect.bottom) {
-        row.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      const containerRect = tableRef.current.getBoundingClientRect();
+      const rowRect = row.getBoundingClientRect();
+
+      if (
+        rowRect.top < containerRect.top ||
+        rowRect.bottom > containerRect.bottom
+      ) {
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
-  }
+  };
 
   const handleNavigateUp = () => {
-    if (messages.length === 0) return
-    
-    const newIndex = selectedMessageIndex === -1 
-      ? messages.length - 1 
-      : Math.max(0, selectedMessageIndex - 1)
-    
-    setSelectedMessageIndex(newIndex)
-    scrollToRow(newIndex)
-  }
+    if (messages.length === 0) return;
+
+    const newIndex =
+      selectedMessageIndex === -1
+        ? messages.length - 1
+        : Math.max(0, selectedMessageIndex - 1);
+
+    setSelectedMessageIndex(newIndex);
+    scrollToRow(newIndex);
+  };
 
   const handleNavigateDown = () => {
-    if (messages.length === 0) return
-    
-    const newIndex = selectedMessageIndex === -1 
-      ? 0 
-      : selectedMessageIndex + 1 < messages.length 
-        ? selectedMessageIndex + 1 
-        : -1
+    if (messages.length === 0) return;
 
-    setSelectedMessageIndex(newIndex)
-    
+    const newIndex =
+      selectedMessageIndex === -1
+        ? 0
+        : selectedMessageIndex + 1 < messages.length
+        ? selectedMessageIndex + 1
+        : -1;
+
+    setSelectedMessageIndex(newIndex);
+
     if (newIndex === -1) {
-      scrollToBottom()
+      scrollToBottom();
     } else {
-      scrollToRow(newIndex)
+      scrollToRow(newIndex);
     }
-  }
+  };
 
   const handleRowClick = (index: number) => {
-    setSelectedMessageIndex(selectedMessageIndex === index ? -1 : index)
-  }
+    setSelectedMessageIndex(selectedMessageIndex === index ? -1 : index);
+  };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('Copied to clipboard')
-    }).catch(err => {
-      console.error('Failed to copy: ', err)
-    })
-  }
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
 
   const formatTimestamp = (timestamp: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      fractionalSecondDigits: 3
-    }).format(timestamp)
-  }
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      fractionalSecondDigits: 3,
+    }).format(timestamp);
+  };
 
   const formatMessageData = (data: any) => {
-    if (typeof data === 'string') {
+    if (typeof data === "string") {
       try {
-        return JSON.stringify(JSON.parse(data), null, 2)
+        return JSON.stringify(JSON.parse(data), null, 2);
       } catch {
-        return data
+        return data;
       }
     }
-    return JSON.stringify(data, null, 2)
-  }
+    return JSON.stringify(data, null, 2);
+  };
 
-  const getMessageTypeIcon = (type: 'sent' | 'received') => {
-    return type === 'sent' 
-      ? <ArrowUpRight size={16} className="text-blue-400" />
-      : <ArrowDownLeft size={16} className="text-green-400" />
-  }
+  const getMessageTypeIcon = (type: "sent" | "received") => {
+    return type === "sent" ? (
+      <ArrowUpRight size={16} className="text-blue-400" />
+    ) : (
+      <ArrowDownLeft size={16} className="text-green-400" />
+    );
+  };
 
- 
+  useHotkeys(
+    "arrowup",
+    (e) => {
+      e.preventDefault();
+      handleNavigateUp();
+    },
+    {
+      enabled: messages.length > 0,
+      enableOnFormTags: true,
+    },
+    [messages.length, selectedMessageIndex, handleNavigateUp]
+  );
+
+  useHotkeys(
+    "arrowdown",
+    (e) => {
+      e.preventDefault();
+      handleNavigateDown();
+    },
+    {
+      enabled: messages.length > 0,
+      enableOnFormTags: true,
+    },
+    [messages.length, selectedMessageIndex, handleNavigateDown]
+  );
 
   return (
     <div className="flex flex-col h-full bg-zinc-900 rounded-md">
@@ -115,9 +158,11 @@ const RealtimeClientServerLogsTable = () => {
         <div className="flex items-center gap-2">
           <Clock size={18} className="text-zinc-400" />
           <h3 className="text-white font-medium">Message Logs</h3>
-          <span className="text-xs text-zinc-500">({messages.length} messages)</span>
+          <span className="text-xs text-zinc-500">
+            ({messages.length} messages)
+          </span>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {/* Navigation arrows */}
           <Button
@@ -130,7 +175,7 @@ const RealtimeClientServerLogsTable = () => {
           >
             <ChevronUp size={16} />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -169,13 +214,16 @@ const RealtimeClientServerLogsTable = () => {
             {messages.map((message, index) => (
               <div
                 key={message.id}
-                ref={(el) => { rowRefs.current[index] = el; }}
+                ref={(el) => {
+                  rowRefs.current[index] = el;
+                }}
                 className={`
                   border-l-4 rounded-r-md p-3 cursor-pointer transition-all duration-200
                
-                  ${selectedMessageIndex === index 
-                    ? 'ring-2 ring-zinc-400 bg-zinc-800/50' 
-                    : 'hover:bg-zinc-800/30'
+                  ${
+                    selectedMessageIndex === index
+                      ? "ring-2 ring-zinc-400 bg-zinc-800/50"
+                      : "hover:bg-zinc-800/30"
                   }
                 `}
                 onClick={() => handleRowClick(index)}
@@ -183,16 +231,18 @@ const RealtimeClientServerLogsTable = () => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     {getMessageTypeIcon(message.type)}
-                    <span className={`text-sm font-medium capitalize ${
-                      message.type === 'sent' ? 'text-blue-300' : 'text-green-300'
-                    }`}>
+                    <span
+                      className={`text-sm font-medium capitalize ${
+                        message.type === "sent"
+                          ? "text-blue-300"
+                          : "text-green-300"
+                      }`}
+                    >
                       {message.type}
                     </span>
-                    <span className="text-xs text-zinc-500">
-                      #{index + 1}
-                    </span>
+                    <span className="text-xs text-zinc-500">#{index + 1}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-zinc-400">
                       {formatTimestamp(message.timestamp)}
@@ -201,8 +251,10 @@ const RealtimeClientServerLogsTable = () => {
                       variant="ghost"
                       size="sm"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        copyToClipboard(message.raw || formatMessageData(message.data))
+                        e.stopPropagation();
+                        copyToClipboard(
+                          message.raw || formatMessageData(message.data)
+                        );
                       }}
                       className="h-6 w-6 p-0 text-zinc-400 hover:text-white"
                       title="Copy message"
@@ -220,25 +272,26 @@ const RealtimeClientServerLogsTable = () => {
                       </pre>
                     ) : (
                       <div className="truncate">
-                        {typeof message.data === 'string' 
-                          ? message.data 
-                          : JSON.stringify(message.data)
-                        }
+                        {typeof message.data === "string"
+                          ? message.data
+                          : JSON.stringify(message.data)}
                       </div>
                     )}
                   </div>
                 </div>
 
-                {selectedMessageIndex === index && message.raw && message.raw !== formatMessageData(message.data) && (
-                  <div className="mt-2 text-xs text-zinc-400">
-                    <div className="text-zinc-500 mb-1">Raw:</div>
-                    <div className="font-mono bg-zinc-800 rounded p-2 overflow-x-auto">
-                      <pre className="whitespace-pre-wrap break-words">
-                        {message.raw}
-                      </pre>
+                {selectedMessageIndex === index &&
+                  message.raw &&
+                  message.raw !== formatMessageData(message.data) && (
+                    <div className="mt-2 text-xs text-zinc-400">
+                      <div className="text-zinc-500 mb-1">Raw:</div>
+                      <div className="font-mono bg-zinc-800 rounded p-2 overflow-x-auto">
+                        <pre className="whitespace-pre-wrap break-words">
+                          {message.raw}
+                        </pre>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             ))}
           </div>
@@ -252,13 +305,11 @@ const RealtimeClientServerLogsTable = () => {
           {selectedMessageIndex < messages.length - 1 && (
             <span> • Press ↓ for next</span>
           )}
-          {selectedMessageIndex > 0 && (
-            <span> • Press ↑ for previous</span>
-          )}
+          {selectedMessageIndex > 0 && <span> • Press ↑ for previous</span>}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default RealtimeClientServerLogsTable
+export default RealtimeClientServerLogsTable;

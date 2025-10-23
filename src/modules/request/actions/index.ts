@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/db";
+import { currentUser } from "@/modules/authentication/actions";
 import { Prisma, REST_METHOD } from "@prisma/client";
 import axios, { AxiosRequestConfig } from "axios";
 
@@ -34,6 +35,28 @@ export const addRequestToCollection = async (
 };
 
 export const saveRequest = async (requestId: string, value: Request) => {
+  const user = await currentUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const existingRequest = await db.request.findFirst({
+    where: {
+      id: requestId,
+      collection: {
+        workspace: {
+          OR: [
+            { ownerId: user.id },
+            { members: { some: { userId: user.id } } },
+          ],
+        },
+      },
+    },
+    select: { id: true },
+  });
+
+  if (!existingRequest) {
+    throw new Error("Request not found or access denied.");
+  }
+
   const request = await db.request.update({
     where: { id: requestId },
     data: {
@@ -103,13 +126,38 @@ export async function sendRequest(req: {
 }
 
 export async function run(requestId: string) {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error("Unauthorized access to run request");
+  }
+
   try {
-    const request = await db.request.findUnique({
-      where: { id: requestId },
+    const request = await db.request.findFirst({
+      where: {
+        id: requestId,
+        collection: {
+          workspace: {
+            OR: [
+              { ownerId: user.id },
+              { members: { some: { userId: user.id } } },
+            ],
+          },
+        },
+      },
+      // Select the necessary fields to proceed
+      select: {
+        id: true,
+        method: true,
+        url: true,
+        headers: true,
+        parameters: true,
+        body: true,
+      },
     });
 
     if (!request) {
-      throw new Error(`Request with id ${requestId} not found`);
+      throw new Error("Request not found or access denied.");
     }
 
     const requestConfig = {

@@ -1,4 +1,4 @@
-name : postboy
+name: postboy
 services:
   db:
     image: postgres:latest
@@ -8,3 +8,9 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
+    volumes:
+      # --- FIX: Add persistent volume mapping ---
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: # --- FIX: Define the named volume ---
