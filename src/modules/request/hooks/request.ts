@@ -20,7 +20,7 @@ export function useAddRequestToCollection(collectionId: string) {
       queryClient.invalidateQueries({
         queryKey: ["requests", collectionId],
       });
-      // @ts-expect-error
+      // @ts-expect-error Type mismatch with nanoid in state
       updateTabFromSavedRequest(activeTabId!, data);
     },
   });
@@ -41,7 +41,7 @@ export function useSaveRequest(requestId: string) {
     mutationFn: async (value: Request) => saveRequest(requestId, value),
     onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      //@ts-expect-error
+      // @ts-expect-error Type mismatch with nanoid in state
       updateTabFromSavedRequest(activeTabId!, data);
     },
   });
@@ -54,10 +54,8 @@ export const useRunRequest = (requestId: string) => {
   return useMutation({
     mutationFn: async () => run(requestId) as Promise<ResponseData>, // Type the return
     onSuccess: async (data) => {
-      // ✅ FIX: Added 'data' argument to capture the result
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      // @ts-expect-error
-      setResponseViewerData(data); // ✅ FIX: Use the 'data' argument
+      setResponseViewerData(data);
     },
   });
 };

@@ -1,31 +1,6 @@
 import { create } from "zustand";
 import { nanoid } from "nanoid";
-
-type HeadersMap = Record<string, string>;
-
-interface RequestRun {
-  id: string;
-  requestId?: string;
-  status?: number;
-  statusText?: string;
-  headers?: HeadersMap;
-  body?: string | object | null;
-  durationMs?: number;
-  createdAt?: Date;
-}
-
-interface ResponseData {
-  success: boolean;
-  requestRun: RequestRun;
-  result?: Result;
-}
-
-interface Result {
-  status?: number;
-  statusText?: string;
-  durationMs?: number;
-  size?: number;
-}
+import { ResponseData } from "../components/response-viewer";
 
 interface SavedRequest {
   id: string;
@@ -46,7 +21,7 @@ export type RequestTab = {
   headers?: string;
   parameters?: string;
   unsavedChanges?: boolean;
-  requestId?: string;
+  requestId?: string; // 👈 link to DB request
   collectionId?: string;
   workspaceId?: string;
 };
@@ -59,7 +34,7 @@ type PlaygroundState = {
   setActiveTab: (id: string) => void;
   updateTab: (id: string, data: Partial<RequestTab>) => void;
   markUnsaved: (id: string, value: boolean) => void;
-  openRequestTab: (req: any) => void;
+  openRequestTab: (req: any) => void; // 👈 new
   updateTabFromSavedRequest: (
     tabId: string,
     savedRequest: SavedRequest
@@ -71,8 +46,17 @@ type PlaygroundState = {
 export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
   responseViewerData: null,
   setResponseViewerData: (data) => set({ responseViewerData: data }),
-  tabs: [],
+  tabs: [
+    {
+      id: nanoid(),
+      title: "Request",
+      method: "GET",
+      url: "https://echo.hoppscotch.io",
+      unsavedChanges: false,
+    },
+  ],
   activeTabId: null,
+
   addTab: () =>
     set((state) => {
       const newTab: RequestTab = {

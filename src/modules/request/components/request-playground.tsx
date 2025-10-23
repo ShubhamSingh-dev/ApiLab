@@ -12,7 +12,9 @@ const PlaygroundPage = () => {
   const { tabs, activeTabId, addTab } = useRequestPlaygroundStore();
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
-  const { mutateAsync, isPending } = useSaveRequest(activeTab?.requestId || "");
+  const { mutateAsync, isPending: _isPending } = useSaveRequest(
+    activeTab?.requestId || ""
+  );
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const getCurrentRequestData = () => {
@@ -53,7 +55,7 @@ const PlaygroundPage = () => {
           });
 
           toast.success("Request saved successfully");
-        } catch (error: any) {
+        } catch (error) {
           const message =
             error instanceof Error ? error.message : "Unknown error";
           toast.error("Failed to save request: " + message);
