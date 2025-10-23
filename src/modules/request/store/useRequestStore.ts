@@ -59,7 +59,7 @@ type PlaygroundState = {
   setActiveTab: (id: string) => void;
   updateTab: (id: string, data: Partial<RequestTab>) => void;
   markUnsaved: (id: string, value: boolean) => void;
-  openRequestTab: (req: any) => void; // 👈 new
+  openRequestTab: (req: any) => void;
   updateTabFromSavedRequest: (
     tabId: string,
     savedRequest: SavedRequest
@@ -68,9 +68,7 @@ type PlaygroundState = {
   setResponseViewerData: (data: ResponseData) => void;
 };
 
-// @ts-ignore
 export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
-
   responseViewerData: null,
   setResponseViewerData: (data) => set({ responseViewerData: data }),
   tabs: [],

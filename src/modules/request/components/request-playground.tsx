@@ -55,7 +55,9 @@ const PlaygroundPage = () => {
 
           toast.success("Request saved successfully");
         } catch (error: any) {
-          toast.error("Failed to save request: ", error);
+          const errorMessage =
+            error instanceof Error ? error.message : "Unknown error";
+          toast.error("Failed to save request: " + errorMessage);
         }
       } else {
         setShowSaveModal(true);
