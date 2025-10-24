@@ -3,12 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  LogOut,
-  Settings,
-  CreditCard,
-  User as UserIcon,
-} from "lucide-react";
+import { LogOut, Settings, CreditCard, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -35,7 +30,6 @@ interface UserData {
 
 interface UserButtonProps {
   user: UserData | null;
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   onLogout?: () => void | Promise<void>;
   onSettings?: () => void;
   onProfile?: () => void;
@@ -50,7 +44,6 @@ interface UserButtonProps {
 
 export default function UserButton({
   user,
-  onLogout: _onLogout,
   onSettings,
   onProfile,
   onBilling,

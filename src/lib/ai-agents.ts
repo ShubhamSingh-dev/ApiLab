@@ -165,7 +165,7 @@ IMPORTANT: Return the jsonBody as a valid JSON string that can be parsed with JS
     let parsedJsonBody;
     try {
       parsedJsonBody = JSON.parse(result.object.jsonBody);
-    } catch (_) {
+    } catch {
       // If parsing fails, return the string as-is
       parsedJsonBody = result.object.jsonBody;
     }
@@ -234,7 +234,7 @@ IMPORTANT: Return the jsonBody as a valid JSON string that can be parsed with JS
     let parsedJsonBody;
     try {
       parsedJsonBody = JSON.parse(result.object.jsonBody);
-    } catch (_) {
+    } catch {
       // If parsing fails, return the string as-is
       parsedJsonBody = result.object.jsonBody;
     }
@@ -252,7 +252,8 @@ IMPORTANT: Return the jsonBody as a valid JSON string that can be parsed with JS
     return {
       success: false,
       data: null,
-      error: _error instanceof Error ? _error.message : "Unknown error occurred",
+      error:
+        _error instanceof Error ? _error.message : "Unknown error occurred",
     };
   }
 }
@@ -297,7 +298,8 @@ User Request: ${prompt}
     return {
       success: false,
       data: null,
-      error: _error instanceof Error ? _error.message : "Unknown error occurred",
+      error:
+        _error instanceof Error ? _error.message : "Unknown error occurred",
     };
   }
 }
@@ -345,7 +347,7 @@ export function validateGeneratedJson(jsonBody: Record<string, unknown>): {
       errors,
       suggestions,
     };
-  } catch (_error) {
+  } catch {
     errors.push("Invalid JSON structure");
     return {
       isValid: false,

@@ -111,8 +111,9 @@ export async function sendRequest(req: {
     url: req.url,
     headers: req.headers,
     params: req.params,
-    data: req.body,
-    validateStatus: () => true, // ✅ capture errors too
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: req.body as any,
+    validateStatus: () => true, 
   };
 
   const start = performance.now();

@@ -7,8 +7,7 @@ import { toast } from "sonner";
 import RealtimeClientServerLogsTable from "./realtime-client-server-logs-table";
 
 const RealtimeMessageEditor = () => {
-  const { send, status, isConnected, draftMessage, setDraftMessage } =
-    useWsStore();
+  const { send, status, draftMessage, setDraftMessage } = useWsStore();
 
   const [isSending, setIsSending] = useState(false);
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -45,7 +44,7 @@ const RealtimeMessageEditor = () => {
       let messageToSend;
       try {
         messageToSend = JSON.parse(draftMessage);
-      } catch (e) {
+      } catch {
         // If not valid JSON, send as string
         messageToSend = draftMessage;
       }

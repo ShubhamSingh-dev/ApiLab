@@ -21,11 +21,11 @@ export function useGenerateJsonBody() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: JsonBodyGenerationParams) => generateJsonBody(params),
-    onSuccess: (_data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["json-body"] });
       toast.success("JSON body generated successfully");
     },
-    onError: (_) => {
+    onError: () => {
       toast.error("Failed to generate JSON body");
     },
   });
