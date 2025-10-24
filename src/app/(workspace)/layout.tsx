@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { currentUser } from "@/modules/authentication/actions";
 import Header from "@/modules/layouts/components/header";
 import { initializeWorkspace } from "@/modules/workspace/actions";
