@@ -1,19 +1,24 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import { currentUser } from "@/modules/authentication/actions";
 import Header from "@/modules/layouts/components/header";
 import { initializeWorkspace } from "@/modules/workspace/actions";
 import TabbedLeftPanel from "@/modules/workspace/components/tabbed-left-panel";
 import React from "react";
+import { redirect } from "next/navigation";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const workspace = await initializeWorkspace();
 
   const user = await currentUser();
+
+  if (!user) {
+    return redirect("/sign-in");
+  }
   return (
     <>
       {/* @ts-expect-error Prop type mismatch between server and client components */}{" "}
-      <Header user={user!} workspace={workspace.workspace!} />
+      <Header user={user} workspace={workspace.workspace} />
       <main className="max-h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] flex flex-1 overflow-hidden">
         <div className="flex h-full w-full">
           <div className="w-12 border-r border-zinc-800 bg-zinc-900">
