@@ -20,8 +20,14 @@ interface Props {
   updateTab: (id: string, data: Partial<RequestTab>) => void;
 }
 
+interface ResponseMessage {
+  error?: string;
+  message?: string;
+  success?: boolean;
+}
+
 const RequestBar = ({ tab, updateTab }: Props) => {
-  const { mutateAsync, isPending} = useRunRequest(tab.requestId!);
+  const { mutateAsync, isPending } = useRunRequest(tab.requestId!);
   const requestColorMap: Record<string, string> = {
     GET: "text-green-500",
     POST: "text-blue-500",
@@ -31,15 +37,12 @@ const RequestBar = ({ tab, updateTab }: Props) => {
 
   const onSendRequest = async () => {
     try {
-      const res = await mutateAsync();
+      const res: ResponseMessage = await mutateAsync();
 
       if (res.success) {
-        // ✅ FIX: Check the 'success' flag on the response object
         toast.success("Request sent successfully!");
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const msg =
-          (res as any)?.error ?? (res as any)?.message ?? JSON.stringify(res);
+        const msg = res.error ?? res.message ?? JSON.stringify(res);
         toast.error("Failed to send request: " + (msg || "Unknown error"));
       }
     } catch (error) {
@@ -90,7 +93,7 @@ const RequestBar = ({ tab, updateTab }: Props) => {
         type="submit"
         onClick={onSendRequest}
         disabled={isPending || !tab.url}
-        className="ml-2 text-white  font-bold bg-indigo-500 hover:bg-indigo-600"
+        className="ml-2 text-white font-bold bg-indigo-500 hover:bg-indigo-600"
       >
         <Send className="mr-2" />
         Send

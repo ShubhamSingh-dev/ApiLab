@@ -33,7 +33,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useWorkspaceStore } from "@/modules/layouts/store";
 import { useRequestPlaygroundStore } from "../store/useRequestStore";
 import { useGenerateJsonBody } from "@/modules/ai/hooks/ai-suggestion";
 
@@ -65,7 +64,6 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
   const [copied, setCopied] = useState(false);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const { selectedWorkspace: _selectedWorkspace } = useWorkspaceStore();
 
   const { tabs, activeTabId } = useRequestPlaygroundStore();
 
@@ -109,7 +107,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
       if (bodyValue) {
         try {
           JSON.parse(bodyValue);
-        } catch (e) {
+        } catch {
           console.log("Invalid existing JSON, generating new schema");
         }
       }
@@ -136,7 +134,7 @@ const BodyEditor: React.FC<BodyEditorProps> = ({
       try {
         const formatted = JSON.stringify(JSON.parse(bodyValue), null, 2);
         form.setValue("body", formatted);
-      } catch (error) {
+      } catch {
         console.error("Invalid JSON format");
       }
     }

@@ -30,7 +30,7 @@ const AddNameModal = ({
 
   useEffect(() => {
     if (tab) setName(tab.title);
-  }, [tabId , tab]);
+  }, [tabId, tab]);
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
@@ -61,7 +61,7 @@ const AddNameModal = ({
         setName(result.suggestions[0].name);
         toast.success("Generated name suggestions");
       }
-    } catch (_error) {
+    } catch {
       toast.error("Failed to generate name suggestions");
     }
   };

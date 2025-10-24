@@ -113,7 +113,7 @@ export async function sendRequest(req: {
     params: req.params,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: req.body as any,
-    validateStatus: () => true, 
+    validateStatus: () => true,
   };
 
   const start = performance.now();
@@ -185,7 +185,7 @@ export async function run(requestId: string) {
       method: request.method,
       url: request.url,
       headers: (request.headers as Record<string, string>) || undefined,
-      params: (request.parameters as Record<string, any>) || undefined,
+      params: (request.parameters as Record<string, string>) || undefined,
       body: request.body || undefined,
     };
 
@@ -200,8 +200,7 @@ export async function run(requestId: string) {
         body: result.data
           ? typeof result.data === "string"
             ? result.data
-            : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              JSON.stringify(result.data as any)
+            : JSON.stringify(result.data)
           : Prisma.JsonNull,
         durationMs: result.duration || 0,
       },
@@ -260,8 +259,8 @@ export async function runDirect(requestData: {
   method: string;
   url: string;
   headers?: Record<string, string>;
-  parameters?: Record<string, any>;
-  body?: any;
+  parameters?: Record<string, string>;
+  body?: unknown;
 }) {
   try {
     const requestConfig = {
@@ -283,8 +282,7 @@ export async function runDirect(requestData: {
         body: result.data
           ? typeof result.data === "string"
             ? result.data
-            : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              JSON.stringify(result.data as any)
+            : JSON.stringify(result.data)
           : Prisma.JsonNull,
         durationMs: result.duration || 0,
       },
@@ -306,21 +304,24 @@ export async function runDirect(requestData: {
       requestRun,
       result,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+
     const failedRun = await db.requestRun.create({
       data: {
         requestId: requestData.id,
         status: 0,
         statusText: "Failed",
         headers: "",
-        body: error.message,
+        body: errorMessage,
         durationMs: 0,
       },
     });
 
     return {
       success: false,
-      error: error.message,
+      error: errorMessage,
       requestRun: failedRun,
     };
   }

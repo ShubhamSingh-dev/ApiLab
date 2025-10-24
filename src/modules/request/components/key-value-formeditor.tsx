@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useCallback } from "react";
-import { useForm, useFieldArray} from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -73,17 +73,7 @@ const KeyValueFormEditor: React.FC<KeyValueFormEditorProps> = ({
     name: "items",
   });
 
-const _handleSubmit = (data: KeyValueFormData) => {
-    const filteredItems = data.items
-      .filter((item) => item.enabled !== false && (item.key.trim() || item.value.trim()))
-      .map(({ key, value }) => ({ key, value }));
-
-    onSubmit(filteredItems);
-  };
-
-  const addNewRow = () => {
-    append({ key: "", value: "", enabled: true });
-  };
+  const addNewRow = () => append({ key: "", value: "", enabled: true });
 
   const toggleEnabled = (index: number) => {
     const currentValue = form.getValues(`items.${index}.enabled`);
@@ -91,13 +81,9 @@ const _handleSubmit = (data: KeyValueFormData) => {
   };
 
   const removeRow = (index: number) => {
-    if (fields.length > 1) {
-      remove(index);
-    }
+    if (fields.length > 1) remove(index);
   };
 
-  // Autosave on changes with debounce
-  // We'll serialize the filtered items and only call onSubmit when it changes.
   const lastSavedRef = useRef<string | null>(null);
 
   const getFilteredItemsFromValues = (items: KeyValueItem[]) =>
@@ -107,10 +93,13 @@ const _handleSubmit = (data: KeyValueFormData) => {
       )
       .map(({ key, value }) => ({ key, value }));
 
-  // Simple debounce implementation
-  const debounce = (fn: (...args: any[]) => void, wait = 500) => {
+  // ✅ Properly typed and ESLint-safe debounce
+  const debounce = <Args extends unknown[]>(
+    fn: (...args: Args) => void,
+    wait = 500
+  ) => {
     let t: ReturnType<typeof setTimeout> | null = null;
-    return (...args: any[]) => {
+    return (...args: Args) => {
       if (t) clearTimeout(t);
       t = setTimeout(() => fn(...args), wait);
     };
@@ -129,7 +118,7 @@ const _handleSubmit = (data: KeyValueFormData) => {
   );
 
   const debouncedSaveRef = useRef(saveIfChanged);
-  // keep ref up to date when saveIfChanged changes
+
   useEffect(() => {
     debouncedSaveRef.current = saveIfChanged;
   }, [saveIfChanged]);
@@ -137,18 +126,17 @@ const _handleSubmit = (data: KeyValueFormData) => {
   const debouncedInvokerRef = useRef<((items: KeyValueItem[]) => void) | null>(
     null
   );
+
   useEffect(() => {
     debouncedInvokerRef.current = debounce((items: KeyValueItem[]) => {
       debouncedSaveRef.current(items);
     }, 500);
   }, []);
 
-  // Watch form values and trigger debounced save
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const subscription = form.watch((value) => {
       const items = (value as KeyValueFormData)?.items || [];
-      debouncedInvokerRef.current?.(items as KeyValueItem[]);
+      debouncedInvokerRef.current?.(items);
     });
 
     return () => subscription.unsubscribe();
@@ -158,7 +146,6 @@ const _handleSubmit = (data: KeyValueFormData) => {
     <div className={cn("w-full", className)}>
       <Form {...form}>
         <div className="space-y-4">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-zinc-400">
               Query Parameters
@@ -176,7 +163,6 @@ const _handleSubmit = (data: KeyValueFormData) => {
             </div>
           </div>
 
-          {/* Form Fields */}
           <div className="space-y-2">
             {fields.map((field, index) => (
               <div
@@ -188,7 +174,6 @@ const _handleSubmit = (data: KeyValueFormData) => {
                     : "bg-zinc-800/50 border-zinc-800 opacity-60"
                 )}
               >
-                {/* Key Input */}
                 <div className="col-span-4">
                   <FormField
                     control={form.control}
@@ -209,7 +194,6 @@ const _handleSubmit = (data: KeyValueFormData) => {
                   />
                 </div>
 
-                {/* Value Input */}
                 <div className="col-span-4">
                   <FormField
                     control={form.control}
@@ -262,7 +246,7 @@ const _handleSubmit = (data: KeyValueFormData) => {
                     )}
                   />
                 </div>
-                {/* Remove Button */}
+
                 <div className="col-span-1 flex items-center justify-center">
                   <Button
                     type="button"
@@ -284,7 +268,6 @@ const _handleSubmit = (data: KeyValueFormData) => {
             ))}
           </div>
 
-          {/* Autosave enabled — changes are saved automatically */}
           <div className="flex justify-end pt-4">
             <span className="text-xs text-zinc-500">
               Changes saved automatically
