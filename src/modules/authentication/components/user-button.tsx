@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import {
-  User,
   LogOut,
   Settings,
   CreditCard,
@@ -36,6 +35,7 @@ interface UserData {
 
 interface UserButtonProps {
   user: UserData | null;
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   onLogout?: () => void | Promise<void>;
   onSettings?: () => void;
   onProfile?: () => void;
@@ -50,7 +50,7 @@ interface UserButtonProps {
 
 export default function UserButton({
   user,
-  onLogout,
+  onLogout: _onLogout,
   onSettings,
   onProfile,
   onBilling,

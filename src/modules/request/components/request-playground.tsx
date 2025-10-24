@@ -12,9 +12,7 @@ const PlaygroundPage = () => {
   const { tabs, activeTabId, addTab } = useRequestPlaygroundStore();
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
-  const { mutateAsync, isPending: _isPending } = useSaveRequest(
-    activeTab?.requestId || ""
-  );
+  const { mutateAsync } = useSaveRequest(activeTab?.requestId || "");
   const [showSaveModal, setShowSaveModal] = useState(false);
 
   const getCurrentRequestData = () => {

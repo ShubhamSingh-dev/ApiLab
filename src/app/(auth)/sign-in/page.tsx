@@ -4,6 +4,7 @@ import { signIn } from "@/lib/auth-client";
 import { Chrome, Github } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 const LoginPage = () => {
   const handleSocialSignIn = (provider: "github" | "google") => {
@@ -17,10 +18,12 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-zinc-50 to-indigo-100 dark:from-zinc-900 dark:via-indigo-950 dark:to-zinc-800 flex items-center justify-center p-4">
       <div className="flex w-full max-w-4xl items-center gap-12">
         <div className="hidden md:block flex-shrink-0">
-          <img
+          <Image
             src="/postboy.svg"
             alt="PostBoy Logo"
             className="w-96 h-96 object-contain"
+            width={384}
+            height={384}
           />
         </div>
         <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-indigo-100 dark:border-zinc-700 overflow-hidden ring-1 ring-indigo-50 dark:ring-0">

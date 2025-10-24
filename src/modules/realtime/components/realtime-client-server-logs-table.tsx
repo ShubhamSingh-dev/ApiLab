@@ -23,7 +23,7 @@ const RealtimeClientServerLogsTable = () => {
     if (messages.length > 0 && selectedMessageIndex === -1) {
       scrollToBottom();
     }
-  }, [messages.length]);
+  }, [messages.length , selectedMessageIndex]);
 
   // Update row refs array when messages change
   useEffect(() => {
@@ -106,7 +106,7 @@ const RealtimeClientServerLogsTable = () => {
     }).format(timestamp);
   };
 
-  const formatMessageData = (data: any) => {
+  const formatMessageData = (data: unknown) => {
     if (typeof data === "string") {
       try {
         return JSON.stringify(JSON.parse(data), null, 2);

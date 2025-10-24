@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef, useCallback } from "react";
-import { useForm, useFieldArray, Control } from "react-hook-form";
+import { useForm, useFieldArray} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -74,9 +73,9 @@ const KeyValueFormEditor: React.FC<KeyValueFormEditorProps> = ({
     name: "items",
   });
 
-  const handleSubmit = (data: KeyValueFormData) => {
+const _handleSubmit = (data: KeyValueFormData) => {
     const filteredItems = data.items
-      .filter((item) => item.enabled && (item.key.trim() || item.value.trim()))
+      .filter((item) => item.enabled !== false && (item.key.trim() || item.value.trim()))
       .map(({ key, value }) => ({ key, value }));
 
     onSubmit(filteredItems);
@@ -146,6 +145,7 @@ const KeyValueFormEditor: React.FC<KeyValueFormEditorProps> = ({
 
   // Watch form values and trigger debounced save
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const subscription = form.watch((value) => {
       const items = (value as KeyValueFormData)?.items || [];
       debouncedInvokerRef.current?.(items as KeyValueItem[]);

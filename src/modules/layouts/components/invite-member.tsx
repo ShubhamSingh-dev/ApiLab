@@ -43,7 +43,7 @@ const InviteMember = () => {
       const response = await mutateAsync();
       setInviteLink(response);
       toast.success("Invite link generated!");
-    } catch (error) {
+    } catch {
       toast.error("Failed to generate invite link");
     }
   };
@@ -79,6 +79,7 @@ const InviteMember = () => {
                 Loading members...
               </p>
             ) : (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               workspaceMembers?.map((member: any) => (
                 <Hint
                   key={member.id}

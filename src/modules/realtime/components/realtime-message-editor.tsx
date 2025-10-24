@@ -7,11 +7,12 @@ import { toast } from "sonner";
 import RealtimeClientServerLogsTable from "./realtime-client-server-logs-table";
 
 const RealtimeMessageEditor = () => {
-  const { send, status, isConnected, draftMessage, setDraftMessage, messages } =
+  const { send, status, isConnected, draftMessage, setDraftMessage } =
     useWsStore();
 
   const [isSending, setIsSending] = useState(false);
-  const [lastSent, setLastSent] = useState("");
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  const [__lastSent, __setLastSent] = useState("");
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
 
@@ -51,7 +52,7 @@ const RealtimeMessageEditor = () => {
 
       const success = send(messageToSend);
       if (success) {
-        setLastSent(draftMessage);
+        __setLastSent(draftMessage);
         toast.success("Message sent successfully");
       } else {
         toast.error("Failed to send message");
@@ -65,10 +66,11 @@ const RealtimeMessageEditor = () => {
     } finally {
       setIsSending(false);
     }
-  }, [draftMessage, send, isConnected]);
+  }, [draftMessage, send, status]);
 
   // Initialize Monaco Editor
   const handleEditorDidMount = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (editor: any, monaco: any) => {
       editorRef.current = editor;
       monacoRef.current = monaco;
@@ -80,7 +82,6 @@ const RealtimeMessageEditor = () => {
         enableSchemaRequest: true,
       });
 
-      // Set editor options
       editor.updateOptions({
         theme: "vs-dark",
         fontSize: 14,
@@ -105,10 +106,10 @@ const RealtimeMessageEditor = () => {
       const formatted = JSON.stringify(parsed, null, 2);
       setDraftMessage(formatted);
       if (editorRef.current) {
-        // @ts-expect-error
+        // @ts-expect-error Monaco editor API is used on the ref which is typed as null
         editorRef.current.setValue(formatted);
       }
-    } catch (error) {
+    } catch {
       alert("Invalid JSON format");
     }
   }, [draftMessage, setDraftMessage]);
@@ -128,9 +129,9 @@ const RealtimeMessageEditor = () => {
     const emptyMessage = "{\n  \n}";
     setDraftMessage(emptyMessage);
     if (editorRef.current) {
-      // @ts-expect-error
+      // @ts-expect-error Monaco editor API is used on the ref which is typed as null
       editorRef.current.setValue(emptyMessage);
-      // @ts-expect-error
+      // @ts-expect-error Monaco editor API is used on the ref which is typed as null
       editorRef.current.focus();
     }
   }, [setDraftMessage]);

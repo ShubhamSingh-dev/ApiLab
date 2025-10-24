@@ -11,7 +11,7 @@ type ConnectionStatus =
 type WsMessage = {
   id: string;
   type: "sent" | "received";
-  data: any;
+  data: unknown;
   timestamp: Date;
   raw?: string;
 };

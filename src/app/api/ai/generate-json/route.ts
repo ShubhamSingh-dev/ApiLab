@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateJsonBody, generateSmartJsonBody } from '@/lib/ai-agents';
+import { NextRequest, NextResponse } from "next/server";
+import { generateJsonBody } from "@/lib/ai-agents";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { prompt, method, endpoint, context, existingSchema } = body;
+    const { prompt, method, endpoint, context } = body;
 
     if (!prompt) {
       return NextResponse.json(
-        { error: 'Prompt is required' },
+        { error: "Prompt is required" },
         { status: 400 }
       );
     }
@@ -21,17 +21,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
     return NextResponse.json(result.data);
   } catch (error) {
-    console.error('API Error:', error);
+    console.error("API Error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

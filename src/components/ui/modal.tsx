@@ -67,6 +67,7 @@ const Modal: React.FC<ModalProps> = ({
             </Button>
             {onSubmit && (
               <Button
+                variant={submitVariant}
                 className="bg-indigo-400 hover:bg-indigo-500 text-white"
                 onClick={handleSubmit}
               >

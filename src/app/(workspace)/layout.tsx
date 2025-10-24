@@ -1,4 +1,3 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { currentUser } from "@/modules/authentication/actions";
 import Header from "@/modules/layouts/components/header";
 import { initializeWorkspace } from "@/modules/workspace/actions";
@@ -11,7 +10,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await currentUser();
   return (
     <>
-      {/* @ts-expect-error */}
+      {/* @ts-expect-error Prop type mismatch between server and client components */}{" "}
       <Header user={user!} workspace={workspace.workspace!} />
       <main className="max-h-[calc(100vh-4rem)] h-[calc(100vh-4rem)] flex flex-1 overflow-hidden">
         <div className="flex h-full w-full">

@@ -1,20 +1,10 @@
 "use client";
 
 import Modal from "@/components/ui/modal";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Folder, Plus, Search, X } from "lucide-react";
-import React, { useState, useEffect, act } from "react";
+import { Folder, Search } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import {
-  useAddRequestToCollection,
-  useSaveRequest,
-} from "@/modules/request/hooks/request";
+import { useAddRequestToCollection } from "@/modules/request/hooks/request";
 import { REST_METHOD } from "@prisma/client";
 import { useWorkspaceStore } from "@/modules/layouts/store";
 import { useCollections } from "../hooks/collection";
@@ -55,7 +45,7 @@ const SaveRequestToCollectionModal = ({
     data: collections,
     isLoading,
     isError,
-  } = useCollections(selectedWorkspace?.id!);
+  } = useCollections(selectedWorkspace?.id || "");
   const { mutateAsync, isPending } =
     useAddRequestToCollection(selectedCollectionId);
 
@@ -65,7 +55,7 @@ const SaveRequestToCollectionModal = ({
       setSelectedCollectionId(collectionId || "");
       setSearchTerm("");
     }
-  }, [isModalOpen, requestData.name, initialName]);
+  }, [isModalOpen, requestData.name, initialName, collectionId]);
 
   useEffect(() => {
     if (!isModalOpen) return;

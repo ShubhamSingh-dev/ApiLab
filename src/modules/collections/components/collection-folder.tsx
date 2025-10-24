@@ -164,6 +164,7 @@ const CollectionFolder = ({ collection }: Props) => {
               </div>
             ) : hasRequests ? (
               <div className="ml-6 border-l border-zinc-800 pl-4 space-y-1">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {requestData.map((request: any) => (
                   <div
                     key={request.id}
@@ -172,7 +173,6 @@ const CollectionFolder = ({ collection }: Props) => {
                   >
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="flex items-center space-x-2">
-                        {/* @ts-expect-error */}
                         <span
                           className={`text-xs font-bold px-2 py-1 rounded ${
                             requestColorMap[

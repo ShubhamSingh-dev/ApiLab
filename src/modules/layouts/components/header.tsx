@@ -1,11 +1,10 @@
 "use client";
 
-import { Unplug, Search } from "lucide-react";
+import { Unplug } from "lucide-react";
 import React from "react";
 import UserButton from "@/modules/authentication/components/user-button";
 import { UserProps } from "../types";
 import SearchBar from "./search-bar";
-import { currentUser } from "@/modules/authentication/actions";
 import InviteMember from "./invite-member";
 import Workspace from "./workspace";
 
@@ -29,7 +28,6 @@ const Header = ({ user }: Props) => {
       </div>
       <div className="col-span-2 flex items-center justify-end space-x-2 hover:cursor-pointer hover:opacity-80">
         <InviteMember />
-        {/* @ts-expect-error */}
         <Workspace />
         <UserButton user={user} size="sm" />
       </div>

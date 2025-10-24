@@ -34,7 +34,7 @@ type PlaygroundState = {
   setActiveTab: (id: string) => void;
   updateTab: (id: string, data: Partial<RequestTab>) => void;
   markUnsaved: (id: string, value: boolean) => void;
-  openRequestTab: (req: any) => void; // 👈 new
+  openRequestTab: (req: unknown) => void; // 👈 new
   updateTabFromSavedRequest: (
     tabId: string,
     savedRequest: SavedRequest
@@ -101,7 +101,8 @@ export const useRequestPlaygroundStore = create<PlaygroundState>((set) => ({
       ),
     })),
 
-  openRequestTab: (req) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  openRequestTab: (req: any) =>
     set((state) => {
       // 🔎 check if already open
       const existing = state.tabs.find((t) => t.requestId === req.id);

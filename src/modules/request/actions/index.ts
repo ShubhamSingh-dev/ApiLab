@@ -85,8 +85,27 @@ export async function sendRequest(req: {
   url: string;
   headers?: Record<string, string>;
   params?: Record<string, string>;
-  body?: any;
-}) {
+  body?: unknown;
+}): Promise<
+  | {
+      status: number;
+      statusText: string;
+      headers: Record<string, string>;
+      data: unknown;
+      duration: number;
+      size: number;
+      error?: undefined;
+    }
+  | {
+      error: string;
+      duration: number;
+      status?: undefined;
+      statusText?: undefined;
+      headers?: undefined;
+      data?: undefined;
+      size?: undefined;
+    }
+> {
   const config: AxiosRequestConfig = {
     method: req.method,
     url: req.url,
@@ -116,10 +135,11 @@ export async function sendRequest(req: {
       duration: Math.round(duration),
       size,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // FIX: Changed any to unknown
     const end = performance.now();
     return {
-      error: error.message,
+      error: error instanceof Error ? error.message : "Unknown error",
       duration: Math.round(end - start),
     };
   }
@@ -179,7 +199,8 @@ export async function run(requestId: string) {
         body: result.data
           ? typeof result.data === "string"
             ? result.data
-            : JSON.stringify(result.data)
+            : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              JSON.stringify(result.data as any)
           : Prisma.JsonNull,
         durationMs: result.duration || 0,
       },
@@ -200,7 +221,7 @@ export async function run(requestId: string) {
       requestRun,
       result,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     try {
       const failedRun = await db.requestRun.create({
         data: {
@@ -208,22 +229,26 @@ export async function run(requestId: string) {
           status: 0,
           statusText: "Failed",
           headers: "",
-          body: error.message,
+          body:
+            error instanceof Error
+              ? error.message
+              : "Unknown error occurred during fetch",
           durationMs: 0,
         },
       });
 
       return {
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : "Unknown error",
         requestRun: failedRun,
       };
     } catch (dbError) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      const dbErrMsg =
+        dbError instanceof Error ? dbError.message : String(dbError);
       return {
         success: false,
-        error: `Request failed: ${error.message}. DB save failed: ${
-          (dbError as Error).message
-        }`,
+        error: `Request failed: ${errMsg}. DB save failed: ${dbErrMsg}`,
       };
     }
   }
@@ -257,7 +282,8 @@ export async function runDirect(requestData: {
         body: result.data
           ? typeof result.data === "string"
             ? result.data
-            : JSON.stringify(result.data)
+            : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              JSON.stringify(result.data as any)
           : Prisma.JsonNull,
         durationMs: result.duration || 0,
       },

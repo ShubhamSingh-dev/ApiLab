@@ -8,7 +8,6 @@ import {
   HelpCircle,
   Plus,
   Search,
-  Upload,
   Loader,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -30,8 +29,7 @@ const TabbedSidebar = ({ currentWorkspace }: Props) => {
 
   const {
     data: collections,
-    isPending,
-    isError,
+    isPending
   } = useCollections(currentWorkspace?.id);
 
   if (isPending)

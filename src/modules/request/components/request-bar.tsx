@@ -6,7 +6,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -22,7 +21,7 @@ interface Props {
 }
 
 const RequestBar = ({ tab, updateTab }: Props) => {
-  const { mutateAsync, isPending, isError } = useRunRequest(tab.requestId!);
+  const { mutateAsync, isPending} = useRunRequest(tab.requestId!);
   const requestColorMap: Record<string, string> = {
     GET: "text-green-500",
     POST: "text-blue-500",
@@ -38,6 +37,7 @@ const RequestBar = ({ tab, updateTab }: Props) => {
         // ✅ FIX: Check the 'success' flag on the response object
         toast.success("Request sent successfully!");
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const msg =
           (res as any)?.error ?? (res as any)?.message ?? JSON.stringify(res);
         toast.error("Failed to send request: " + (msg || "Unknown error"));
